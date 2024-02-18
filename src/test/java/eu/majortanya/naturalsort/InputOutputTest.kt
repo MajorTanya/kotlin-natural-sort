@@ -27,13 +27,9 @@ class InputOutputTest(
             val resourceStream = object {}::class.java.getResourceAsStream(resourceName)
                 ?: throw IOException("Resource not found: $resourceName")
 
-            val result: MutableList<String> = mutableListOf()
-            resourceStream.reader().buffered().use { reader ->
-                reader.forEachLine { line ->
-                    if (!line.startsWith("#")) result.add(line)
-                }
+            return resourceStream.reader().buffered().useLines { lines ->
+                lines.filterNot { it.startsWith("#") }.toList()
             }
-            return result
         }
 
         @Parameterized.Parameters
